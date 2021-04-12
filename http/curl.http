@@ -1,0 +1,4 @@
+
+
+# 登录
+curl -H "Content-Type: application/json" -d "{\"auth\":{\"identity\":{\"methods\":[\"password\"],\"password\":{\"user\":{\"name\":\"admin\",\"domain\":{\"id\":\"default\"},\"password\":\"Admin@ES20!8\"}}},\"scope\":{\"project\":{\"id\":\"73e49f581d954f85b4a8eb633e33e3a6\"}}}}" http://keystone.openstack.svc.cluster.local/v3/auth/tokens

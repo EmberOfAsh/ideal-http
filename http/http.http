@@ -1,0 +1,469 @@
+# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection) or
+# paste cURL into the file and request will be converted to HTTP Request format.
+#
+# Following HTTP Request Live Templates are available:
+# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
+# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
+# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
+
+###
+#R 版
+###
+
+POST http://{{providerUrl}}/v3/auth/tokens
+Content-Type: application/json
+
+{
+  "auth": {
+    "identity": {
+      "methods": [
+        "password"
+      ],
+      "password": {
+        "user": {
+          "name": "{{userName}}",
+          "domain": {
+            "id": "{{domain}}"
+          },
+          "password": "{{password}}"
+        }
+      }
+    },
+    "scope": {
+      "project": {
+        "id": "{{projectId}}"
+      }
+    }
+  }
+}
+
+> {%
+     client.test("Request executed successfully", function() {
+        client.assert(response.status < 300, "Response status is not 200");
+        client.global.set("token",response.headers.valueOf("X-Subject-Token"));
+        for(var i = 0; i < response.body.token.catalog.length; i++) {
+            for(var j = 0; j < 3; j++) {
+              if (response.body.token.catalog[i].endpoints[j].interface == "public"){
+                  client.log(response.body.token.catalog[i].name);
+                  client.log(response.body.token.catalog[i].endpoints[j].interface);
+                  client.log(response.body.token.catalog[i].endpoints[j].url);
+                  client.global.set(response.body.token.catalog[i].name, response.body.token.catalog[i].endpoints[j].url);
+              }
+            }
+        }
+    });
+%}
+
+<> 2021-03-11T094508.201.json
+<> 2021-03-10T174544.201.json
+<> 2021-03-10T174522.404.json
+<> 2021-02-01T115004.201.json
+<> 2021-01-18T190211.404.txt
+
+### 查询实例详情
+GET http://{{aodh}}/v2/alarms
+X-Auth-Token: {{token}}
+
+### 查询实例详情
+GET http://{{ceilometer}}/v2/meters
+X-Auth-Token: {{token}}
+
+### 查询实例详情
+POST http://{{gnocchi}}/v1/search/resource/instance_network_interface
+X-Auth-Token: {{token}}
+
+### 查询实例详情
+GET http://{{gnocchi}}/search/resource/genaric
+X-Auth-Token: {{token}}
+
+### 查询实例详情
+GET http://{{keystone}}/domains
+X-Auth-Token: {{token}}
+
+### 查询实例详情
+GET http://{{keystone}}/domains
+X-Auth-Token: {{token}}
+
+###
+DELETE http://{{keystone}}/domains/21632dd84f7945bdab4d55c6064fff0a
+X-Auth-Token: {{token}}
+
+### 查询实例详情
+GET http://{{nova}}/servers/detail
+X-Auth-Token: {{token}}
+
+### 查询可用区
+GET http://{{nova}}/os-availability-zone
+X-Auth-Token: {{token}}
+
+### 查询实例类型
+GET http://{{nova}}//flavors/detail
+X-Auth-Token: {{token}}
+
+<> 2021-03-11T094912.200.json
+<> 2021-03-11T094609.200.json
+<> 2021-03-10T174643.200.json
+
+### 查询实例类型详情
+GET http://{{nova}}//flavors/fcf3e944-23d8-4081-9a1f-7ce5d0350728
+X-Auth-Token: {{token}}
+
+<> 2021-03-11T095019.200.json
+<> 2021-03-11T094839.200.json
+<> 2021-03-11T094816.404.txt
+
+### 查询可用区
+GET http://{{cinder}}/os-availability-zone
+X-Auth-Token: {{token}}
+
+### 查询可用区
+GET  http://keystone.openstack.svc.cluster.local/v3/os-availability-zone
+X-Auth-Token: {{token}}
+
+<> 2021-03-11T101327.404.json
+<> 2021-01-18T190212.404.json
+
+### 查询租户使用配额
+GET http://{{nova}}/os-simple-tenant-usage?detailed=1
+X-Auth-Token: {{token}}
+
+### 查询宿主机列表
+GET http://{{nova}}/os-hypervisors?with_servers=true
+X-Auth-Token: {{token}}
+
+### 查询宿主机关联实例
+GET http://{{nova}}/os-hypervisors/openstack-rocky/servers
+X-Auth-Token: {{token}}
+
+### 查询宿主机列表详情
+GET http://{{nova}}/os-hypervisors/detail
+X-Auth-Token: {{token}}
+
+###
+GET http://{{neutron}}/ports
+X-Auth-Token: {{token}}
+
+###
+GET http://{{glance}}/v2/images
+X-Auth-Token: {{token}}
+
+### 查询硬盘快照
+GET http://{{cinder}}/snapshots/detail
+X-Auth-Token: {{token}}
+
+###
+PATCH  http://{{glance}}e4e9bcb5-2fce-4d3c-a56e-1b53409bc0c3
+Content-Type: application/openstack-images-v2.1-json-patch
+X-Auth-Token: {{token}}
+
+[{
+        "op": "replace",
+        "path": "/image_type",
+        "value": "snapshot"
+}]
+
+### 冷迁移
+POST http://nova.openstack.svc.cluster.local/v2.1/30fc090d671d490a9d349353f1408f7d/servers/834a81b3-9cd8-4181-8196-1247bedb9c22/action
+Content-Type: application/json; charset=utf-8
+X-Auth-Token: {{token}}
+
+{
+  "migrate": {
+    "host": "node-1.domain.tld"
+  }
+}
+
+<> 2021-03-11T101328.401.json
+
+###############CMP###############
+
+###
+POST http://{{providerUrl}}/api/v1/users/login
+Content-Type: application/json
+
+{
+  "account": "{{userName}}",
+  "password": "{{password}}",
+  "userType": "{{userType}}"
+}
+
+> {% client.global.set("Bearer_Token",response.body.data.token) %}
+
+<> 2021-01-18T190213.404.txt
+
+###
+GET http://{{providerUrl}}/api/v1/snapshots?cloudEnvId=2220
+authorization: Bearer {{Bearer_Token}}
+
+<> 2021-01-18T190214.404.txt
+
+###
+GET http://{{providerUrl}}/api/v1/hosts?pagenum=0&pagesize=10&envId=2220
+authorization: Bearer {{Bearer_Token}}
+
+<> 2021-01-18T190215.404.txt
+
+###
+GET http://{{providerUrl}}/api/v1/severs?envId=2142
+authorization: Bearer {{Bearer_Token}}
+
+<> 2021-01-18T190215-1.404.txt
+
+###
+GET http://{{providerUrl}}/api/v1/hosts?subnetIdNotEqual=16103&envId=2122
+authorization: Bearer {{Bearer_Token}}
+
+<> 2021-01-18T190215-2.404.txt
+
+###
+GET http://localhost:8090/api/v1/tasks?pagenum=0&pagesize=10
+authorization: Bearer {{Bearer_Token}}
+
+###
+GET http://localhost:8090/api/v1/hosts?envId=1763&pagenum=0&pagesize=10
+authorization: Bearer {{Bearer_Token}}
+
+######
+GET http://localhost:8090/api/v1/lb/932/usable_hosts?resLbBackendGroupId=261
+authorization: Bearer {{Bearer_Token}}
+
+###
+PUT http://127.0.0.1:8090/api/v1/envs/1744/sync
+header_user_id: 414
+header_org_id: 219
+Content-Type: application/json
+
+{
+  "key": "vm"
+}
+
+
+###
+POST http://127.0.0.1:8090/api/v1/notifications/alarm
+Content-Type: application/json
+
+{
+  "ruleId": 76,
+  "orgSid": 17,
+  "alarmData": {
+    "id": 1545,
+    "templateId": null,
+    "strategyId": 107,
+    "ownerId": null,
+    "alarmStartTime": "2020-06-18 17:40:00",
+    "lastAlarmTime": "2020-06-18 17:42:00",
+    "alarmCount": null,
+    "source": "cmp",
+    "alarmLevel": "2",
+    "target": "262572d3afa411eab476005056833b69",
+    "targetType": "RES-VM",
+    "tags": null,
+    "content": "当内存使用率持续1分钟大于75.0%触发告警，触发告警时指标值为：78.73%",
+    "status": "active",
+    "confirmed": null,
+    "confirmUser": null,
+    "confirmTime": null,
+    "confirmContent": null,
+    "recoveredTime": null,
+    "createdBy": "admin",
+    "createdDt": "2020-06-18 17:44:48",
+    "updatedBy": "admin",
+    "updatedDt": "2020-06-18 17:44:48",
+    "version": 1,
+    "orgSid": 17,
+    "priority": 2,
+    "cloudEnvId": 1792,
+    "cloudEnvName": "FusionCompute(POC-DEMO)",
+    "cloudEnvType": "FusionCompute",
+    "targetName": null,
+    "targetTypeName": null,
+    "deployName": null,
+    "statusName": null
+  },
+  "alarmContactList": [
+    {
+      "id": 1149,
+      "name": "yulin1",
+      "mobile": "19942225639",
+      "mobileStatus": "active",
+      "mobileActiveCode": "vuxulqld",
+      "email": "541754130@qq.com",
+      "emailStatus": "active",
+      "emailActiveCode": "vq1sc56m",
+      "groups": "",
+      "createdBy": "hucuilan",
+      "createdDt": "2020-06-18 17:29:52",
+      "updatedBy": "hucuilan",
+      "updatedDt": "2020-06-18 17:29:52",
+      "version": 1,
+      "ownerId": null,
+      "orgSid": 17,
+      "orgName": null
+    }
+  ]
+}
+
+############################### HW-OpenStack Rest #################################3
+
+### 认证
+POST https://{{providerUrl}}/v3/auth/tokens
+Content-Type: application/json
+
+{
+  "auth": {
+    "identity": {
+      "methods": [
+        "password"
+      ],
+      "password": {
+        "user": {
+          "name": "{{userName}}",
+          "domain": {
+            "name": "{{domain}}"
+          },
+          "password": "{{password}}"
+        }
+      }
+    },
+    "scope": {
+      "domain": {
+        "name": "{{domain}}"
+      }
+    }
+  }
+}
+> {%
+     client.test("Request executed successfully", function() {
+        client.assert(response.status < 300, "Response status is not 200");
+        client.global.set("token",response.headers.valueOf("X-Subject-Token"));
+    });
+%}
+
+### 认证
+PUT https://{{providerUrl}}:26335/rest/openapi/sm/session
+Accept:application/json
+Content-Type:application/json;charset=UTF-8
+
+{
+  "ipaddr": "127.0.0.1",
+  "userid": "{{userName}}",
+  "value": "{{password}}"
+}
+> {%
+     client.test("Request executed successfully", function() {
+        client.assert(response.status < 300, "Response status is not 200");
+        client.global.set("token", response.body.data);
+    });
+%}
+
+<> 2021-01-18T190244.200.json
+<> 2021-01-18T182050.200.json
+<> 2021-01-16T174331.200.json
+<> 2021-01-16T165334.200.json
+<> 2021-01-16T161331.200.json
+<> 2021-01-16T142715.200.json
+<> 2021-01-15T181541.200.json
+<> 2021-01-15T170549.200.json
+<> 2021-01-15T164356.200.json
+<> 2021-01-15T145106.200.json
+
+### 查询所有资源分类
+GET https://{{providerUrl}}:26335/rest/cmdb/v1/categories
+Content-Type: application/json;charset=UTF8
+X-Auth-Token: {{token}}
+
+<> 2021-01-15T145931.200.json
+
+### 查询所有服务器
+GET https://{{providerUrl}}:26335/rest/cmdb/v1/instances/CLOUD_VM
+Content-Type: application/json;charset=UTF8
+X-Auth-Token: {{token}}
+
+<> 2021-01-15T150004.500.json
+
+### 获取所有监控对象类型
+GET https://{{providerUrl}}:26335/rest/performance/v1/mgr-svc/obj-types
+Content-Type: application/json;charset=UTF8
+X-Auth-Token: {{token}}
+
+### 获取监控对象类型支持的监控指标
+GET https://{{providerUrl}}:26335/rest/performance/v1/mgr-svc/obj-types/562958543355904/indicators
+Content-Type: application/json;charset=UTF8
+X-Auth-Token: {{token}}
+
+
+### 获取监控指标
+POST https://{{providerUrl}}:26335/rest/performance/v1/mgr-svc/indicators
+Content-Type: application/json;charset=UTF8
+X-Auth-Token: {{token}}
+
+[
+  562958543552537,
+  562958543552538,
+  562958543618061,
+  562958543618062,
+  562958543421441,
+  562958543486979
+]
+
+### 查询所有虚拟机
+GET https://{{providerUrl}}:26335/rest/openapi/virtualres/virtualmachine?vmId=65500a6a-630f-4000-ae6f-cb3705207929
+Content-Type: application/json;charset=UTF8
+X-Auth-Token: {{token}}
+
+### 查询最新性能数据
+POST https://{{providerUrl}}:26335/rest/performance/v1/data-svc/latest-data/action/query
+Content-Type: application/json;charset=UTF8
+X-Auth-Token: {{token}}
+
+{
+  "obj_type_id": 562958543355904,
+  "indicator_ids": [
+    562958543552537,
+    562958543552538,
+    562958543618061,
+    562958543618062,
+    562958543421441,
+    562958543486979
+  ],
+  "obj_ids": [
+    "3D5F8CC2DC453CFE8E2AC4A470ABAF7C"
+  ]
+}
+
+### 查询历史性能数据
+POST https://{{providerUrl}}:26335/rest/performance/v1/data-svc/history-data/action/query
+Content-Type: application/json;charset=UTF8
+X-Auth-Token: {{token}}
+
+{
+  "obj_type_id": 562958543355904,
+  "indicator_ids": [
+    562958543552538
+  ],
+  "obj_ids": [
+    "6F82A77AB1253E059278E4575D2B07A7"
+  ],
+  "interval": "MINUTE",
+  "range": "BEGIN_END_TIME",
+  "begin_time": "1609926752999",
+  "end_time": "1610790753019"
+}
+
+### 租户资源查询
+GET https://{{providerUrl}}:26335/rest/tenant-resource/v1/tenant/resources/CLOUD_VM?limit=925
+Content-Type: application/json;charset=UTF8
+X-Auth-Token: {{token}}
+
+### 华为私有云登录
+POST https://10.69.0.201:7443/service/session
+Accept: application/json;version=version=6.0;charset=UTF-8
+Content-Type: application/json;charset=UTF-8
+Accept-Language: zh_CN
+X-Auth-User: gesysman
+X-Auth-Key: ac27ce8fbe037eb899c8074e5dca90ec2b0c07fff5d397430c539e8b4a1c9dcd
+X-Auth-UserType: 2
+X-ENCRIPT-ALGORITHM: 0
+X-Auth-AuthType: 0
+
+###
