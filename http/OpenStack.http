@@ -92,6 +92,24 @@ X-Auth-Token: {{token}}
 DELETE http://{{keystone}}/domains/21632dd84f7945bdab4d55c6064fff0a
 X-Auth-Token: {{token}}
 
+### 创建实例
+POST http://{{nova}}/servers
+Content-Type: application/json
+X-Auth-Token: {{token}}
+
+{
+  "server" : {
+    "name" : "测试申请",
+    "adminPass" : "IMChgv58",
+    "imageRef" : "5962cc90-3c34-40dd-a0df-dadfe125dbff",
+    "flavorRef" : "1",
+    "availability_zone" : "nova",
+    "networks" : [ {
+      "port" : "e6db3b33-c572-4438-b01b-c7a758021833"
+    } ]
+  }
+}
+
 ### 查询实例详情
 GET http://{{nova}}/servers/detail
 X-Auth-Token: {{token}}
