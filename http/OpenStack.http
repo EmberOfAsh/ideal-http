@@ -60,6 +60,10 @@ Content-Type: application/json
 <> 2021-02-01T115004.201.json
 <> 2021-01-18T190211.404.txt
 
+### 查询网络信息
+GET http://{{neutron}}/v2.0/networks
+X-Auth-Token: {{token}}
+
 ### 查询实例详情
 GET http://{{aodh}}/v2/alarms
 X-Auth-Token: {{token}}
